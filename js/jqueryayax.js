@@ -3,22 +3,24 @@ $(document).ready(function () {
 
     $.getJSON({
         dataType: "json",
-        url: "https://gibm.becknet.ch/warenhaus/getFiliale.php?format=JSON",
+        url: "http://sandbox.gibm.ch/berufe.php",
         success: function (result) {
+            console.log(result)
+
             $.each(result, function (i, value) {
-                item = "<option class='dropdown-item' value='" + value.id + "' >" + value.stadt + ", " + value.strasse + "</option>";
+                item = "<option class='dropdown-item' value='" + value.beruf_id + "' >" + value.beruf_name + "</option>";
                 $("#dropdown").append(item);
             });
 
             if (localStorage.getItem('lastSelectedItem') != null) {
                 $("#dropdown option[value="+ localStorage.getItem('lastSelectedItem') +"]").attr('selected', 'selected');
             };
-           
+    
         }
     });
 
 
-    if (localStorage.getItem('lastSelectedItem') != null) {
+/*     if (localStorage.getItem('lastSelectedItem') != null) {
         dataID = localStorage.getItem('lastSelectedItem')
         ajaxRequest(dataID);
     };
@@ -36,10 +38,10 @@ $(document).ready(function () {
         localStorage.clear();
     });
 
-
+ */
 });
 
-
+/* 
 function ajaxRequest(value) {
     if (!$.trim( $('#ausgabe').html() ).length){
         console.log("empty")
@@ -61,4 +63,4 @@ function ajaxRequest(value) {
                 '</td></tr>');
         }
     });
-}
+} */
