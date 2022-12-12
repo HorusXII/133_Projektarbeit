@@ -11,10 +11,10 @@ $(document).ready(function () {
                 item = "<option class='dropdown-item' value='" + value.beruf_id + "' >" + value.beruf_name + "</option>";
                 $("#dropdown").append(item);
             });
-/* 
+
             if (localStorage.getItem('lastSelectedItem') != null) {
                 $("#dropdown option[value="+ localStorage.getItem('lastSelectedItem') +"]").attr('selected', 'selected');
-            }; */
+            };
     
         }
     });
