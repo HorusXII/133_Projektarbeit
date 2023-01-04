@@ -3,27 +3,19 @@
 
 <head>
     <title>AJAX mit jQuery und JSON.</title>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" id="sdm-styles-css"
-        href="https://www.bbzbl.ch/wp-content/plugins/simple-download-monitor/css/sdm_wp_styles.css?ver=6.1.1.1671348203"
-        type="text/css" media="all">
-
 </head>
 
 <body>
     <p>
-        Filiale:
         <select name="berufe" id="berufe" class="dropdown-responsived">
             <option value="empty"> Ihre Auswahl ... </option>
         </select>
-        <button id="clear" class="btn btn-danger">
-            Clear Storage
-        </button>
     </p>
     <p>
         <select name="klasse" id="klasse" class="dropdown-responsived">
@@ -33,96 +25,47 @@
 
     <div>
         <div>
-            <h2>Stundenplan Informatiker Betriebsinformatik IBE 19-23 B</h2>
+            <h2>Stundenplan</h2>
             <br>
             <div class="week">
-                <a href="https://www.bbzbl.ch/stundenplan/?id=&amp;beruf=35&amp;klasse=3315539&amp;lehrer=&amp;woche=50-2022#sp2"
-                    class="button">
-                    <i class="fas fa-chevron-left"></i>
-                    <span class="label">vorherigeWoche</span>
-                </a>
-                <div class="cur-week">
-                    <strong>Woche 51, 2022</strong>
-                    <br>
-                    19.12.2022 - 25.12.2022
-                </div>
-                <a href="https://www.bbzbl.ch/stundenplan/?id=&amp;beruf=35&amp;klasse=3315539&amp;lehrer=&amp;woche=52-2022#sp2"
-                    class="button cal">
-                    <span class="tlabel">nächste Woche</span>
-                    <i class="fas fa-chevron-right"></i>
-                </a>
+                <button id="last" class="btn btn-link">vorherige Woche</button>
+                <strong id="currentWeek">Woche 51, 2022</strong>
+                <button id="next" class="btn btn-link">nächste Woche</button>
             </div>
             <br>
-            <table class="table">
-                <tbody>
-                    <tr> 
-                        <!-- DEBUG 1 -->
-                        <!-- 1 1 -->
-                        <td class="spColumn">
-                            <div class="spTitle">Montag</div>
-                            <div style="min-height: 179px;" class="spLesson">
-                                08:05 - 11:35 Uhr<br>
-                                <span class="fach">133
-                                    Webapplikation mit Sessionhandling realisieren
-                                </span><br>
-                                Brodbeck Daniel
-                                <br><span class="raum">P-1.4 Pratteln</span>
-                                <br>
-                            </div>
-                            <div class="spSpacer" style="height: 59px;"></div>
-                            <div style="min-height: 136px;" class="spLesson">
-                                12:45 - 15:25 Uhr<br>
-                                <span class="fach">Allgemeinbildung</span><br>
-                                Meneghin Martin<br>
-                                <span class="raum">
-                                    P-2.9 Pratteln
-                                </span><br>
-                            </div>
-                            <div class="spSpacer" style="height: 3px;"></div>
-                            <div style="min-height: 80px;" class="spLesson">
-                                15:30 - 17:05 Uhr<br>
-                                <span class="fach">
-                                    Betriebswirtsch. Grundlagen
-                                </span><br>
-                                Müller-Gentsch Stephan<br>
-                                <span class="raum">
-                                    P-1.4 Pratteln
-                                </span><br>
-                            </div>
-                            <div class="spSpacer" style="height: 15px;">
-                            </div>
-                        </td>
-                        <td class="spColumn nachLeerTage">
-                            <div class="spTitle">
-                                Dienstag
-                            </div>
-                        </td>
-                        <td class="spColumn nachLeerTage">
-                            <div class="spTitle">
-                                Mittwoch
-                            </div>
-                        </td>
-                        <td class="spColumn nachLeerTage">
-                            <div class="spTitle">
-                                Donnerstag
-                            </div>
-                        </td>
-                        <td class="spColumn nachLeerTage">
-                            <div class="spTitle">
-                                Freitag
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
 
+            <div>
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col">Montag</th>
+                            <th scope="col">Dienstag</th>
+                            <th scope="col">Mitwoch </th>
+                            <th scope="col">Donnerstag</th>
+                            <th scope="col">Freitag</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="background-color: red;">
+                                    content
+                                </div>
+                                <br>
+                                <div style="background-color: red;">
+                                </div>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-
-
-    <div id="ausgabe" class="table-striped">
-    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="js/jqueryayax.js"></script>
