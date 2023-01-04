@@ -166,20 +166,23 @@ function setup() {
 
 $(document).ready(function () {
     setup();
+    currentWeek = getWeek(new Date());
 
     $("#berufe").on("change", function () {
         //reseten der ganzen Ansicht wenn die Klasse gewechselt wird.
         $("#klasse").empty()
         localStorage.setItem('lastSelectedJob', this.value);
-        localStorage.setItem('date', JSON.stringify(getWeek(new Date())));
+        localStorage.setItem('date', JSON.stringify(currentWeek));
         getClass(this.value);
         updateTable();
+        $('#woche').text("Woche " + currentWeek.week);
     });
 
     $("#klasse").on("change", function () {
         localStorage.setItem('lastSelectedClass', this.value);
-        localStorage.setItem('date', JSON.stringify(getWeek(new Date())));
+        localStorage.setItem('date', JSON.stringify(currentWeek));
         updateTable();
+        $('#woche').text("Woche " + currentWeek.week);
     });
 
     //eventlistener for moving backwards 1 week
