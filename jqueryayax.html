@@ -2,73 +2,62 @@
 <html lang="de">
 
 <head>
-    <title>AJAX mit jQuery und JSON.</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AJAX mit jQuery und JSON.</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <body>
-    <p>
-        <select name="berufe" id="berufe" class="dropdown-responsived">
-            <option value="empty"> Ihre Auswahl ... </option>
-        </select>
-    </p>
-    <p>
-        <select name="klasse" id="klasse" class="dropdown-responsived">
-            <option value="empty"> Ihre Auswahl ... </option>
-        </select>
-    </p>
+  <h1  class="d-flex justify-content-center" id="titel">Stundenplan</h1>
+  <br>
+  <div class="col-auto">
+    <label class="sr-only" for="berufe">Beruf:</label>
+    <select name="berufe" id="berufe" class="form-control  mb-2">
+      <option value="empty"> Ihre Auswahl ... </option>
+    </select>
+  </div>
+  <div class="col-auto">
+    <label class="sr-only" for="klasse">Klasse:</label>
+    <select name="klasse" id="klasse" class="form-control  mb-2">
+      <option value="empty"> Ihre Auswahl ... </option>
+    </select>
+  </div>
 
-    <div>
-        <div>
-            <h2>Stundenplan</h2>
-            <br>
-            <div class="week">
-                <button id="last" class="btn btn-link">vorherige Woche</button>
-                <strong id="currentWeek">Woche 51, 2022</strong>
-                <button id="next" class="btn btn-link">nächste Woche</button>
-            </div>
-            <br>
-
-            <div>
-                <table class="table table-borderless">
-                    <thead>
-                        <tr>
-                            <th scope="col">Montag</th>
-                            <th scope="col">Dienstag</th>
-                            <th scope="col">Mitwoch </th>
-                            <th scope="col">Donnerstag</th>
-                            <th scope="col">Freitag</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div style="background-color: red;">
-                                    content
-                                </div>
-                                <br>
-                                <div style="background-color: red;">
-                                </div>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  <br>
+  <div>
+    <div class="week">
+      <ul class="pagination justify-content-center">
+        <li class="page-item">
+          <a class="page-link" id="last" href="#">&laquo;</a>
+        </li>
+        <li class="page-item"><strong id="woche" class="page-link">Woche 1</strong></li>
+        <li class="page-item">
+          <a class="page-link" id="next" href="#">&raquo;</a>
+        </li>
+      </ul>
     </div>
+    <div>
+      <table id="timetable" class="table table-borderless">
+        <tr>
+          <th>Datum</th>
+          <th>Wochentag</th>
+          <th>Start</th>
+          <th>Ende</th>
+          <th>Lehrperson</th>
+          <th>Fach</th>
+          <th>Raum</th>
+        </tr>
+      </table>
+    </div>
+  </div>
 
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="js/jqueryayax.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="js/jqueryayax.js"></script>
 </body>
 
 </html>
