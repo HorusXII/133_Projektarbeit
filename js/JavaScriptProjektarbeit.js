@@ -108,6 +108,7 @@ function updateTable() {
     appendTable(klasse, woche);
 }
 
+
 //Function to get all Classes & Append them. if a JobID is given als parameter, append Classes of this Job.
 function getClass(berufID) {
     url = "http://sandbox.gibm.ch/klassen.php";
@@ -137,6 +138,8 @@ function getClass(berufID) {
 
 //Function to load all default Values
 function setup() {
+    //hide the infotext
+    $("#info").hide();
     //Get all Jobs and append the Dropdown for Jobselection. If already a selected job is in the localstorage, it will be selected.
     lastJob = localStorage.getItem('lastSelectedJob');
     if (localStorage.getItem('date') === null) {
@@ -164,10 +167,24 @@ function setup() {
 
 }
 
+
 $(document).ready(function () {
+
     setup();
+    //set current week to the Date of the current week
     currentWeek = getWeek(new Date());
 
+    $("#timetable").on("DOMSubtreeModified", function(){
+        $("#info").show();
+        setTimeout(function(){
+            $("#info").hide()
+        }, 1000);
+    });
+
+
+    
+
+    //everytime 
     $("#berufe").on("change", function () {
         //reseten der ganzen Ansicht wenn die Klasse gewechselt wird.
         $("#klasse").empty()
@@ -177,6 +194,7 @@ $(document).ready(function () {
         updateTable();
         $('#woche').text("Woche " + currentWeek.week);
     });
+
 
     $("#klasse").on("change", function () {
         localStorage.setItem('lastSelectedClass', this.value);
