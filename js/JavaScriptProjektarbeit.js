@@ -6,6 +6,8 @@
  */
 function getWeek(currentDate) {
     // Create a new Date object representing January 1 of the current year
+    startDate = new Date(currentDate.getFullYear(), 0, 1);
+    // Create a new Date object representing January 1 of the current year
     var days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
     // Calculate the weeknumber by dividing the days by 7 and format it to string and round it up to the next full int
     var weekNumber = Math.ceil(days / 7);
