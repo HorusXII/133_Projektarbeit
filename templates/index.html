@@ -12,11 +12,11 @@
 </head>
 
 <body>
-  <h1  class="d-flex justify-content-center" id="titel">Stundenplan</h1>
+  <h1 class="d-flex justify-content-center" id="titel">Stundenplan</h1>
   <br>
   <div class="col-auto">
     <label class="sr-only" for="berufe">Beruf:</label>
-    <select name="berufe" id="berufe" class="form-control  mb-2">
+    <select name="berufe" id="berufe" class="form-control  mb-2 justify-content-center">
       <option value="empty"> Ihre Auswahl ... </option>
     </select>
   </div>
@@ -28,36 +28,38 @@
   </div>
 
   <br>
-  <div>
-    <div class="week">
-      <ul class="pagination justify-content-center">
-        <li class="page-item">
-          <a class="page-link" id="last" href="#">&laquo;</a>
-        </li>
-        <li class="page-item"><strong id="woche" class="page-link">Woche 1</strong></li>
-        <li class="page-item">
-          <a class="page-link" id="next" href="#">&raquo;</a>
-        </li>
-      </ul>
-    </div>
-    <div>
-      <table id="timetable" class="table table-borderless">
-        <tr>
-          <th>Datum</th>
-          <th>Wochentag</th>
-          <th>Start</th>
-          <th>Ende</th>
-          <th>Lehrperson</th>
-          <th>Fach</th>
-          <th>Raum</th>
-        </tr>
-      </table>
-    </div>
+  <div class="week">
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a class="page-link" id="last" href="#">&laquo;</a>
+      </li>
+      <li class="page-item"><strong id="woche" class="page-link">Woche 1</strong></li>
+      <li class="page-item">
+        <a class="page-link" id="next" href="#">&raquo;</a>
+      </li>
+    </ul>
   </div>
+  <div>
+    <table id="timetable" class="table table-borderless table-responsive w-100 table-fill">
+      <tr>
+        <th>Datum</th>
+        <th>Wochentag</th>
+        <th>Start</th>
+        <th>Ende</th>
+        <th>Lehrperson</th>
+        <th>Fach</th>
+        <th>Raum</th>
+      </tr>
+    </table>
+  </div>
+
+  <div id="info" class="alert alert-danger text-center fixed-bottom" role="alert"></div>
+
+
 
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-  <script src="js/jqueryayax.js"></script>
+  <script src="{{ js_url }}"></script>
 </body>
 
 </html>
