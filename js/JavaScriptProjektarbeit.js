@@ -5,10 +5,12 @@
  * @return {Object} An object containing the calculated week number and year.
  */
 function getWeek(currentDate) {
-    startDate = new Date(currentDate.getFullYear(), 0, 1);
+    // Create a new Date object representing January 1 of the current year
     var days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
+    // Calculate the weeknumber by dividing the days by 7 and format it to string and round it up to the next full int
     var weekNumber = Math.ceil(days / 7);
     weekNumber = weekNumber.toString();
+    // If the Number is shorter then 2 it will append leading zeros.
     while (weekNumber.length < 2) weekNumber = "0" + weekNumber;
     // Return the calculated result      
     return { "week": weekNumber, "year": currentDate.getFullYear() };
@@ -38,15 +40,12 @@ function calcWeek(direction) {
         }
     }
 
+    // Format the Week to the correct format, put it into a JSON-Object and store it into the LocalStorage
     week = week.toString();
     while (week.length < 2) week = "0" + week;
     date["week"] = week;
     $('#woche').text("Woche " + date.week);
     localStorage.setItem('date', JSON.stringify(date));
-}
-
-function warning(infotext) {
-
 }
 
 
@@ -168,6 +167,7 @@ function getClass(berufID) {
             }
             updateTable();
         },
+        // If there is a unvalid input, it will repeat the request without a specific job.
         error: function () {
             getClass();
         }
@@ -198,10 +198,12 @@ function setup() {
         url: "http://sandbox.gibm.ch/berufe.php",
         success: function (result) {
             if (result) {
+                // Checks of there is Data
                 $.each(result, function (i, value) {
                     item = "<option class='dropdown-item' value='" + value.beruf_id + "' >" + value.beruf_name + "</option>";
                     $("#berufe").append(item);
                 });
+                // If there is already a job in the localStorage, it will selct this one. and request all the classes of the Job else it just requests every Class.
                 if (lastJob != null) {
                     $("#berufe option[value=" + localStorage.getItem('lastSelectedJob') + "]").attr('selected', 'selected');
                     getClass(lastJob);
