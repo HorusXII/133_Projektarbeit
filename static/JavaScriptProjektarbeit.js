@@ -5,10 +5,12 @@
  * @return {Object} An object containing the calculated week number and year.
  */
 function getWeek(currentDate) {
-    startDate = new Date(currentDate.getFullYear(), 0, 1);
+    // Create a new Date object representing January 1 of the current year
     var days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
+    // Calculate the weeknumber by dividing the days by 7 and format it to string and round it up to the next full int
     var weekNumber = Math.ceil(days / 7);
     weekNumber = weekNumber.toString();
+    // If the Number is shorter then 2 it will append leading zeros.
     while (weekNumber.length < 2) weekNumber = "0" + weekNumber;
     // Return the calculated result      
     return { "week": weekNumber, "year": currentDate.getFullYear() };
@@ -38,17 +40,13 @@ function calcWeek(direction) {
         }
     }
 
+    //format the Week to the correct format, put it into a JSON-Object and store it into the LocalStorage
     week = week.toString();
     while (week.length < 2) week = "0" + week;
     date["week"] = week;
     $('#woche').text("Woche " + date.week);
     localStorage.setItem('date', JSON.stringify(date));
 }
-
-function warning(infotext) {
-
-}
-
 
 /**
 * Fügt Daten einer HTML-Tabelle von der API unter http://sandbox.gibm.ch/tafel.php hinzu.
@@ -155,6 +153,7 @@ function getClass(berufID) {
         dataType: "json",
         url: this.url,
         success: function (result) {
+            //The Dropdown is appended with every item
             $.each(result, function (i, value) {
                 item = "<option class='dropdown-item' value='" + value.klasse_id + "' >" + value.klasse_name + "</option>";
                 $("#klasse").append(item);
@@ -168,6 +167,7 @@ function getClass(berufID) {
             }
             updateTable();
         },
+        // if there is a unvalid input, it will repeat the request without a specific job.
         error: function () {
             getClass();
         }
@@ -185,23 +185,25 @@ function getClass(berufID) {
 function setup() {
     //hide the infotext
     $("#info").hide();
-    //Get all Jobs and append the Dropdown for Jobselection. If already a selected job is in the localstorage, it will be selected.
+    // Get all Jobs and append the Dropdown for Jobselection. If already a selected job is in the localstorage, it will be selected.
     lastJob = localStorage.getItem('lastSelectedJob');
     if (localStorage.getItem('date') === null) {
         localStorage.setItem('date', JSON.stringify(getWeek(new Date())));
     }
     var date = $.parseJSON(localStorage.getItem('date'));
     $('#woche').text("Woche " + date.week);
-    //request the Data and filter if all Jobs ar needed or if there is already a selected Job
+    // Request the Data and filter if all Jobs ar needed or if there is already a selected Job
     $.getJSON({
         dataType: "json",
         url: "http://sandbox.gibm.ch/berufe.php",
         success: function (result) {
+            // Checks of there is Data
             if (result) {
                 $.each(result, function (i, value) {
                     item = "<option class='dropdown-item' value='" + value.beruf_id + "' >" + value.beruf_name + "</option>";
                     $("#berufe").append(item);
                 });
+                // If there is already a job in the localStorage, it will selct this one. and request all the classes of the Job else it just requests every Class.
                 if (lastJob != null) {
                     $("#berufe option[value=" + localStorage.getItem('lastSelectedJob') + "]").attr('selected', 'selected');
                     getClass(lastJob);
@@ -219,7 +221,7 @@ function setup() {
             }
         },
         error: function () {
-            // API is not reachable
+            // API is not reachable, retrys the function after 1 second
             $("#info").text("API is not reachable. Retrying in 1 seconds...");
             $("#info").show();
             setTimeout(function () {
