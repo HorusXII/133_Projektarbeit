@@ -1,4 +1,9 @@
-//Function to calculate the current week number
+/**
+ * Calculates the week number and year of the given date.
+ *
+ * @param {Date} currentDate - The date to calculate the week number for.
+ * @return {Object} An object containing the calculated week number and year.
+ */
 function getWeek(currentDate) {
     startDate = new Date(currentDate.getFullYear(), 0, 1);
     var days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
@@ -9,7 +14,11 @@ function getWeek(currentDate) {
     return { "week": weekNumber, "year": currentDate.getFullYear() };
 }
 
-//Function to set a changed week and check if conditions are met.
+/**
+ * Calculates the week number for the previous or next week, and updates the date in local storage.
+ *
+ * @param {string} direction - The direction to move the date, either "last" or "next".
+ */
 function calcWeek(direction) {
     date = JSON.parse(localStorage.getItem('date'));
     week = parseInt(date["week"]);
@@ -36,7 +45,9 @@ function calcWeek(direction) {
     localStorage.setItem('date', JSON.stringify(date));
 }
 
+function warning(infotext) {
 
+}
 
 
 /**
@@ -74,17 +85,19 @@ function appendTable(klasse_id, woche) {
 
     // Hole die Daten von der API und füge sie der Tabelle hinzu
     $.getJSON(url, function (data) {
-        $.each(data, function (index, item) {
-            // Split the tafel_datum value into its component parts
-            var parts = item.tafel_datum.split('-');
-            // Join the parts back together in the desired format
-            var formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
-            // Replace the tafel_wochentag value with the corresponding weekday
-            var weekday = weekdays[item.tafel_wochentag] || 'N/A';
-            // Format the tafel_von and tafel_bis times to the hh:mm format
-            var startTime = item.tafel_von.substr(0, 5) || 'N/A';
-            var endTime = item.tafel_bis.substr(0, 5) || 'N/A';
-            $('#timetable').append(`
+        // API is reachable and delivers data
+        if (data[0]) {
+            $.each(data, function (index, item) {
+                // Split the tafel_datum value into its component parts
+                var parts = item.tafel_datum.split('-');
+                // Join the parts back together in the desired format
+                var formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
+                // Replace the tafel_wochentag value with the corresponding weekday
+                var weekday = weekdays[item.tafel_wochentag] || 'N/A';
+                // Format the tafel_von and tafel_bis times to the hh:mm format
+                var startTime = item.tafel_von.substr(0, 5) || 'N/A';
+                var endTime = item.tafel_bis.substr(0, 5) || 'N/A';
+                $('#timetable').append(`
             <tr>
               <td>${formattedDate}</td>
               <td>${weekday}</td>
@@ -95,12 +108,28 @@ function appendTable(klasse_id, woche) {
               <td>${item.tafel_raum || 'N/A'}</td>
             </tr>
           `);
-        });
+            });
+        } else {
+            // API is reachable but does not deliver data
+            $("#info").text("API is reachable but does not deliver data.");
+            $("#info").show();
+            setTimeout(function () {
+                $("#info").hide()
+            }, 1000);
+        }
+    }).fail(function () {
+        // API is not reachable or not delivering data, display a message and retry after a short delay
+        $("#info").text("API is not reachable");
+        $("#info").show();
+        setTimeout(function () {
+            $("#info").hide()
+        }, 1000);
     });
 }
 
-
-//Function to request a Table. Class must be given as parameter, week is optional.
+/**
+ * Retrieves the selected class and week from local storage, and updates the table with the corresponding data.
+ */
 function updateTable() {
     klasse = localStorage.getItem("lastSelectedClass");
     date = JSON.parse(localStorage.getItem('date'));
@@ -109,7 +138,13 @@ function updateTable() {
 }
 
 
-//Function to get all Classes & Append them. if a JobID is given als parameter, append Classes of this Job.
+/**
+ * Retrieves the list of classes from the API and appends them to the class dropdown.
+ * If a berufID is given as a parameter, it filters the classes by job.
+ * If a class was previously selected, it is set as the selected option again.
+ *
+ * @param {string} berufID - The ID of the job to filter the classes by.
+ */
 function getClass(berufID) {
     url = "http://sandbox.gibm.ch/klassen.php";
     if (berufID != undefined) {
@@ -132,11 +167,21 @@ function getClass(berufID) {
                 localStorage.setItem('lastSelectedClass', newValue);
             }
             updateTable();
+        },
+        error: function () {
+            getClass();
         }
     });
 }
 
-//Function to load all default Values
+/**
+ * Sets up the default values and loads the data from the API.
+ *
+ * Hides the info text, retrieves the list of jobs and appends them to the job dropdown.
+ * If a job was previously selected, it is set as the selected option again.
+ * If the date is not stored in local storage, it retrieves the current week number and stores it in local storage.
+ * It then displays the current week number and retrieves the list of classes from the API, filtered by the selected job if applicable.
+ */
 function setup() {
     //hide the infotext
     $("#info").hide();
@@ -152,42 +197,61 @@ function setup() {
         dataType: "json",
         url: "http://sandbox.gibm.ch/berufe.php",
         success: function (result) {
-            $.each(result, function (i, value) {
-                item = "<option class='dropdown-item' value='" + value.beruf_id + "' >" + value.beruf_name + "</option>";
-                $("#berufe").append(item);
-            });
-            if (lastJob != null) {
-                $("#berufe option[value=" + localStorage.getItem('lastSelectedJob') + "]").attr('selected', 'selected');
-                getClass(lastJob);
+            if (result) {
+                $.each(result, function (i, value) {
+                    item = "<option class='dropdown-item' value='" + value.beruf_id + "' >" + value.beruf_name + "</option>";
+                    $("#berufe").append(item);
+                });
+                if (lastJob != null) {
+                    $("#berufe option[value=" + localStorage.getItem('lastSelectedJob') + "]").attr('selected', 'selected');
+                    getClass(lastJob);
+                } else {
+                    getClass();
+                };
+
             } else {
-                getClass();
-            };
+                // API is reachable but does not deliver data
+                $("#info").text("API is reachable but does not deliver data.");
+                $("#info").show();
+                setTimeout(function () {
+                    $("#info").hide()
+                }, 1000);
+            }
+        },
+        error: function () {
+            // API is not reachable
+            $("#info").text("API is not reachable. Retrying in 1 seconds...");
+            $("#info").show();
+            setTimeout(function () {
+                $("#info").hide()
+            }, 1000);
+            setTimeout(setup, 1000);
         }
     });
 
 }
 
 
+// Document ready function
 $(document).ready(function () {
-
+    // Set up default values and load data from the API
     setup();
-    //set current week to the Date of the current week
+
+    // Get the current week number
     currentWeek = getWeek(new Date());
 
-    $("#timetable").on("DOMSubtreeModified", function(){
+    // Show the info text when the timetable is modified and hide it after 1 second
+    $("#timetable").on("DOMSubtreeModified", function () {
+        $("#info").text("Daten wurden verändert");
         $("#info").show();
-        setTimeout(function(){
+        setTimeout(function () {
             $("#info").hide()
         }, 1000);
     });
 
-
-    
-
-    //everytime 
+    // When the job dropdown changes, update the class dropdown and local storage
     $("#berufe").on("change", function () {
-        //reseten der ganzen Ansicht wenn die Klasse gewechselt wird.
-        $("#klasse").empty()
+        $("#klasse").empty();
         localStorage.setItem('lastSelectedJob', this.value);
         localStorage.setItem('date', JSON.stringify(currentWeek));
         getClass(this.value);
@@ -195,7 +259,7 @@ $(document).ready(function () {
         $('#woche').text("Woche " + currentWeek.week);
     });
 
-
+    // When the class dropdown changes, update local storage
     $("#klasse").on("change", function () {
         localStorage.setItem('lastSelectedClass', this.value);
         localStorage.setItem('date', JSON.stringify(currentWeek));
@@ -203,17 +267,15 @@ $(document).ready(function () {
         $('#woche').text("Woche " + currentWeek.week);
     });
 
-    //eventlistener for moving backwards 1 week
+    // When the "last" button is clicked, calculate the previous week and update the table
     $("#last").click(function (e) {
         calcWeek("last");
         updateTable();
     });
 
-    //eventlistener for the Button to move 1 week forward
+    // When the "next" button is clicked, calculate the next week and update the table
     $("#next").click(function (e) {
         calcWeek("next");
         updateTable();
     });
-
-
 });
