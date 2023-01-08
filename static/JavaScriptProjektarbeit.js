@@ -119,7 +119,7 @@ function appendTable(klasse_id, woche) {
         }
     }).fail(function () {
         // API is not reachable or not delivering data, display a message and retry after a short delay
-        $("#info").text("API ist nicht erreichbar");
+        $("#info").text("API ist nicht erreichbar.1");
         $("#info").show();
         setTimeout(function () {
             $("#info").hide()
@@ -134,7 +134,9 @@ function updateTable() {
     klasse = localStorage.getItem("lastSelectedClass");
     date = JSON.parse(localStorage.getItem('date'));
     woche = date["week"] + "-" + date["year"].toString();
-    appendTable(klasse, woche);
+    if (klasse != "empty"){
+        appendTable(klasse, woche);
+    }
 }
 
 
@@ -219,9 +221,10 @@ function setup() {
                     item = "<option class='dropdown-item' value='" + value.beruf_id + "' >" + value.beruf_name + "</option>";
                     $("#berufe").append(item);
                 });
-                // If there is already a job in the localStorage, it will selct this one. and request all the classes of the Job else it just requests every Class.
+                // If there is already a job in the localStorage, it will select this one, delete the default value and request all the classes of the job. Else it just requests every Class.
                 if (lastJob != null) {
                     $("#berufe option[value=" + localStorage.getItem('lastSelectedJob') + "]").attr('selected', 'selected');
+                    $('#berufe option[value="empty"]').remove();
                     getClass(lastJob);
                 } else {
                     getClass();
