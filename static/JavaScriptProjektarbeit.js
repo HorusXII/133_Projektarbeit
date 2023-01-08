@@ -58,7 +58,7 @@ function calcWeek(direction) {
 */
 function appendTable(klasse_id, woche) {
     // Prüfe, ob die klasse_id leer ist, und zeige eine Warnung an, falls ja
-    if (klasse_id == "empty") {
+    if (klasse_id == "empty" && localStorage.getItem('lastSelectedClass') === null) {
         alert('Die klasse_id darf nicht leer sein!');
         return;
     }
@@ -111,7 +111,7 @@ function appendTable(klasse_id, woche) {
             });
         } else {
             // API is reachable but does not deliver data
-            $("#info").text("API is reachable but does not deliver data.");
+            $("#info").text("API ist erreichbar aber liefert keine Daten.");
             $("#info").show();
             setTimeout(function () {
                 $("#info").hide()
@@ -119,7 +119,7 @@ function appendTable(klasse_id, woche) {
         }
     }).fail(function () {
         // API is not reachable or not delivering data, display a message and retry after a short delay
-        $("#info").text("API is not reachable");
+        $("#info").text("API ist nicht erreichbar");
         $("#info").show();
         setTimeout(function () {
             $("#info").hide()
@@ -155,22 +155,36 @@ function getClass(berufID) {
         dataType: "json",
         url: this.url,
         success: function (result) {
-            //The Dropdown is appended with every item
-            $.each(result, function (i, value) {
-                item = "<option class='dropdown-item' value='" + value.klasse_id + "' >" + value.klasse_name + "</option>";
-                $("#klasse").append(item);
-            });
-            var currentValue = localStorage.getItem('lastSelectedClass');
-            if ($('#klasse option[value="' + currentValue + '"]').length > 0) {
-                $('#klasse').val(currentValue);
+            if (result[0]) {
+                //The Dropdown is appended with every item
+                $.each(result, function (i, value) {
+                    item = "<option class='dropdown-item' value='" + value.klasse_id + "' >" + value.klasse_name + "</option>";
+                    $("#klasse").append(item);
+                });
+                var currentValue = localStorage.getItem('lastSelectedClass');
+                if ($('#klasse option[value="' + currentValue + '"]').length > 0) {
+                    $('#klasse').val(currentValue);
+                } else {
+                    var newValue = $('#klasse option:first').val();
+                    localStorage.setItem('lastSelectedClass', newValue);
+                }
+                updateTable();
             } else {
-                var newValue = $('#klasse option:first').val();
-                localStorage.setItem('lastSelectedClass', newValue);
+                // API is reachable but does not deliver data
+                $("#info").text("API ist erreichbar aber liefert keine Daten.");
+                $("#info").show();
+                setTimeout(function () {
+                    $("#info").hide()
+                }, 1000);
             }
-            updateTable();
         },
         // if there is a unvalid input, it will repeat the request without a specific job.
         error: function () {
+            $("#info").text("API ist nicht erreichbar.");
+            $("#info").show();
+            setTimeout(function () {
+                $("#info").hide()
+            }, 1000);
             getClass();
         }
     });
@@ -200,7 +214,7 @@ function setup() {
         url: "http://sandbox.gibm.ch/berufe.php",
         success: function (result) {
             // Checks of there is Data
-            if (result) {
+            if (result[0]) {
                 $.each(result, function (i, value) {
                     item = "<option class='dropdown-item' value='" + value.beruf_id + "' >" + value.beruf_name + "</option>";
                     $("#berufe").append(item);
@@ -215,7 +229,7 @@ function setup() {
 
             } else {
                 // API is reachable but does not deliver data
-                $("#info").text("API is reachable but does not deliver data.");
+                $("#info").text("API ist erreichbar aber liefert keine Daten.");
                 $("#info").show();
                 setTimeout(function () {
                     $("#info").hide()
@@ -224,12 +238,12 @@ function setup() {
         },
         error: function () {
             // API is not reachable, retrys the function after 1 second
-            $("#info").text("API is not reachable. Retrying in 1 seconds...");
+            $("#info").text("API ist nicht erreichbar. Neuer Versuch in 5 Sekunden...");
             $("#info").show();
             setTimeout(function () {
                 $("#info").hide()
-            }, 1000);
-            setTimeout(setup, 1000);
+            }, 2000);
+            setTimeout(setup, 5000);
         }
     });
 
@@ -255,6 +269,7 @@ $(document).ready(function () {
 
     // When the job dropdown changes, update the class dropdown and local storage
     $("#berufe").on("change", function () {
+        $('#berufe option[value="empty"]').remove();
         $("#klasse").empty();
         localStorage.setItem('lastSelectedJob', this.value);
         localStorage.setItem('date', JSON.stringify(currentWeek));
